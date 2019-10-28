@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<project name="local_env_module_gf4" basedir="." default="zip">	  
+	
+  <target name="zip">
+  	
+    <!-- delete temp files -->	
+  	<delete dir="local_env/domains/myDomain/osgi-cache"/>
+  	<delete dir="local_env/domains/myDomain/logs"/>
+  	<mkdir dir="local_env/domains/myDomain/logs"/>
+  		
+    <!-- zip it -->
+  	<zip destfile="local_env_module_gf4.zip">
+  		<zipfileset dir="local_env" prefix="local_env"/>
+    </zip>
+        		
+  </target>   
+  
+</project>

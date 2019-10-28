@@ -1,0 +1,19 @@
+###extract required Glassfish and copy required JDK folder into local_env###
+<GF or Payara>.zip
+
+###using an preconfigured domain or change JDK###
+simply import in Eclipse and execute prepare.xml ANT script
+
+###configuring a new local domain###
+1   correct values in prepare.properties (extract used zip and copied JDK)
+2   validate paths in prepare.xml (must be changed for weblogic, jboss and so on)
+3   correct values in local domain in folder domains
+4   execute prepare.xml ANT script
+
+###help for Code Compare###
+As comparison of application server and JDK will take to much time, simply exclude them in Code Compare.
+--> local domain will still be compared, because it's an separate folder
+
+###switch between configuration environments###
+simply duplicate the files (domain.xml_PROD,...) and rename with a script for each environment
+for application configuration files you can just copy the ones from staging (maybe with different name)

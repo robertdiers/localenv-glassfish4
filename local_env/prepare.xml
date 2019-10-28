@@ -1,0 +1,115 @@
+<?xml version="1.0"?>
+<project name="prepare local env" basedir="." default="prepare">	  
+  
+  <property file="prepare.properties"/> 
+				   
+  <target name="prepare">
+    <!-- get actual path -->	
+	<echo>${user.dir}</echo>
+    <!-- build the aboslut paths for JDK and server -->
+    <property name="local_server_path" value="${user.dir}${file.separator}${local_server}${file.separator}glassfish"/>
+    <property name="local_jdk_path" value="${user.dir}${file.separator}${local_jdk}"/>
+    <!-- update server configuration, using a java class because of buggy ANT replacements with regex -->
+    <javac srcdir="." destdir="." encoding="UTF-8">
+    	<exclude name="domains/**" />
+    	<exclude name="glassfish*/**" />
+    	<exclude name="jdk*/**" />
+    	<exclude name="payara*/**" />
+    </javac>
+    <java classname="LineContainsReplace">
+        <arg value="${local_server_path}${file.separator}config${file.separator}asenv.bat"/>
+        <arg value="set AS_JAVA="/>
+        <arg value="set AS_JAVA=${local_jdk_path}"/>
+    	<classpath>
+    	  <pathelement location="."/>
+    	</classpath>
+    </java>
+  	<echo>AS_JAVA updated (Win)</echo>
+  	<java classname="LineContainsReplace">
+  	    <arg value="${local_server_path}${file.separator}config${file.separator}asenv.conf"/>
+  	    <arg value="AS_JAVA="/>
+  	    <arg value="AS_JAVA=${local_jdk_path}"/>
+  	    <classpath>
+  	      <pathelement location="."/>
+  	    </classpath>
+  	</java>
+	<echo>AS_JAVA updated (Linux)</echo>
+    <!-- payara fix -->
+  	<java classname="LineContainsReplace">
+  	        <arg value="${local_server_path}${file.separator}config${file.separator}asenv.bat"/>
+  	        <arg value="# DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER."/>
+  	        <arg value="set AS_JAVA=${local_jdk_path}"/>
+  	    	<classpath>
+  	    	  <pathelement location="."/>
+  	    	</classpath>
+  	    </java>
+  	  	<echo>AS_JAVA updated (Win)</echo>
+  	  	<java classname="LineContainsReplace">
+  	  	    <arg value="${local_server_path}${file.separator}config${file.separator}asenv.conf"/>
+  	  	    <arg value="# DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER."/>
+  	  	    <arg value="AS_JAVA=${local_jdk_path}"/>
+  	  	    <classpath>
+  	  	      <pathelement location="."/>
+  	  	    </classpath>
+  	  	</java>
+  		<echo>AS_JAVA updated (Linux)</echo>
+    <!-- payara fix end -->
+	<java classname="LineContainsReplace">
+	    <arg value="${local_server_path}${file.separator}config${file.separator}asenv.bat"/>
+	    <arg value="set AS_DEF_DOMAINS_PATH="/>
+	    <arg value="set AS_DEF_DOMAINS_PATH=${basedir}${file.separator}${local_domains}"/>
+	    <classpath>
+	      <pathelement location="."/>
+	    </classpath>
+	</java>
+	<echo>AS_DEF_DOMAINS_PATH updated (Win)</echo>
+  	<java classname="LineContainsReplace">
+  	    <arg value="${local_server_path}${file.separator}config${file.separator}asenv.conf"/>
+  	    <arg value="AS_DEF_DOMAINS_PATH="/>
+  	    <arg value="AS_DEF_DOMAINS_PATH=${basedir}${file.separator}${local_domains}"/>
+  	    <classpath>
+  	      <pathelement location="."/>
+  	    </classpath>
+  	</java>
+  	<echo>AS_DEF_DOMAINS_PATH updated (Linux)</echo>
+	<java classname="LineContainsReplace">
+		<arg value="startGF.cmd"/>
+		<arg value="asadmin.bat start-domain"/>
+		<arg value="${local_server_path}${file.separator}bin${file.separator}asadmin.bat start-domain --debug ${local_domain_name}"/>
+		<classpath>
+		  <pathelement location="."/>
+		</classpath>
+   </java>
+   <echo>startGF.cmd updated (Win)</echo>
+   <java classname="LineContainsReplace">
+  	    <arg value="startGF.sh"/>
+  	    <arg value="asadmin start-domain"/>
+  	    <arg value="${local_server_path}${file.separator}bin${file.separator}asadmin start-domain --debug ${local_domain_name}"/>
+  	    <classpath>
+  	      <pathelement location="."/>
+  	    </classpath>
+   </java>
+   <echo>startGF.sh updated (Linux)</echo>
+   <java classname="LineContainsReplace">
+  	    <arg value="stopGF.cmd"/>
+  	    <arg value="asadmin.bat stop-domain"/>
+  	    <arg value="${local_server_path}${file.separator}bin${file.separator}asadmin.bat stop-domain ${local_domain_name}"/>
+  	    <classpath>
+  	      <pathelement location="."/>
+  	    </classpath>
+   </java>
+   <echo>stopGF.cmd updated (Win)</echo>
+   <java classname="LineContainsReplace">
+   	    <arg value="stopGF.sh"/>
+   	    <arg value="asadmin stop-domain"/>
+   	    <arg value="${local_server_path}${file.separator}bin${file.separator}asadmin stop-domain ${local_domain_name}"/>
+   	    <classpath>
+   	      <pathelement location="."/>
+   	    </classpath>
+   	</java>
+   	<echo>stopGF.sh updated (Linux)</echo>
+  	<echo>###Linux users: please replace Win JDK###</echo>
+    		
+  </target>   
+  
+</project>
